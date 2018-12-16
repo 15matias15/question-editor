@@ -4,7 +4,7 @@ Question Editor it's a full-stack javascript app, made with MERN (MongoDB, Expre
 
 ## Installation
 
-Use the node package manager [npm](https://www.npmjs.com/) to install node_modules, from the root folder. 
+Use the node package manager [npm](https://www.npmjs.com/) to install node_modules, from the question-editor folder, inside root folder. 
 
 ```node
 npm install
