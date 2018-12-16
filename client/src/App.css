@@ -1,0 +1,90 @@
+.App {
+  text-align: center;
+}
+
+table {
+  border-collapse: separate;
+  border-spacing: 10px;
+  border-right: 1px solid black;
+  overflow: scroll;
+  table-layout: fixed;
+}
+
+.button-header {
+  background-color: lightgray;
+  justify-content: center;
+  text-align: center;
+  width: 30px;
+  height: 30px;
+}
+
+th {
+  font-weight: normal;
+}
+
+.add {
+  color: green;
+  justify-content: center;
+  text-align: center;
+  width: 30px;
+  height: 30px;  
+}
+
+.add-btn {
+  cursor: pointer;
+}
+
+.circle {
+  justify-content: center;
+  text-align: center;
+}
+
+.btn-upload {
+  background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+}
+
+.fa-square > path {
+  color: lightgray;
+  cursor: default;
+}
+
+#titleLabel {
+  width:180px;
+  clear:left;
+  text-align:right;
+  padding-right:10px;
+}
+
+#titleInput {
+  float: left;
+}
+
+.fade-enter {
+  opacity: 0.01;
+}
+
+.fade-enter.fade-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.fade-leave {
+  opacity: 1;
+}
+
+.fade-leave.fade-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}
+
+.legend-label {
+  text-align: center;
+  display: flex;
+  font-size: 15px;
+}
