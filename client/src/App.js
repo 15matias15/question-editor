@@ -114,7 +114,7 @@ class App extends Component {
       .then((resp) => {
         if (resp.status === 'done') {
           if (type === 'row') {
-            let stateCopyRow = Object.assign([], this.state.rows);
+            let stateCopyRow = [...this.state.rows];
             stateCopyRow[id - 1].icon = !stateCopyRow[id - 1].icon;
             stateCopyRow[id - 1].file = resp.fileNewName;
             this.setState({
@@ -123,7 +123,7 @@ class App extends Component {
             });
           }
           if (type === 'col') {
-            let stateCopyCol = Object.assign([], this.state.cols);
+            let stateCopyCol = [...this.state.cols];
             stateCopyCol[id - 1].icon = !stateCopyCol[id - 1].icon;
             stateCopyCol[id - 1].file = resp.fileNewName;
             this.setState({
