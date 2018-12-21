@@ -5,7 +5,7 @@ import { faPlus, faSquare, } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faPlus, faSquare);
 
-export function Legend() {
+const legend = () => {
     return (
         <div className="col-sm-6" >
             <h5><strong>Legend</strong></h5>
@@ -33,3 +33,5 @@ export function Legend() {
         </div>
     )
 }
+
+export default legend;

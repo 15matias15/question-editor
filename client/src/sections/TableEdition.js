@@ -9,7 +9,7 @@ library.add(faPlus, faCircle, faSquare, faMinusCircle);
 
 export default class TableEdition extends Component {
     drawCols = () => {
-        let data = this.props.Cols;
+        let data = this.props.cols;
         return (
             data.map((col) => (
                 <th key={col.id} className="button-header">
@@ -31,7 +31,7 @@ export default class TableEdition extends Component {
     };
 
     drawColNumber = () => {
-        let data = this.props.Cols;
+        let data = this.props.cols;
         return (
             data.map((col) => (
                 <th key={col.id}>
@@ -42,7 +42,7 @@ export default class TableEdition extends Component {
     };
 
     drawRows = () => {
-        let data = this.props.Rows;
+        let data = this.props.rows;
         return (
             data.map((row) => (
                 <tr key={row.id}>
@@ -63,7 +63,7 @@ export default class TableEdition extends Component {
                     <td>
                         {row.name}
                     </td>
-                    {this.props.Cols.map((col) => {
+                    {this.props.cols.map((col) => {
                         return (
                             <td key={col.id} className="circle">
                                 <FontAwesomeIcon icon={faCircle} className="fa-sm" />
@@ -127,14 +127,18 @@ export default class TableEdition extends Component {
 
     render() {
         return (
-            <table>
-                <thead>
-                    {this._header()}
-                </thead>
-                <tbody>
-                    {this._body()}
-                </tbody>
-            </table >
+            <div className="col-sm-6" >
+                <h5><strong>{this.props.title} EDITION VIEW</strong></h5>
+                {this.props.title || <p style={{ fontStyle: 'italic' }}>Title of the question</p>}
+                <table>
+                    <thead>
+                        {this._header()}
+                    </thead>
+                    <tbody>
+                        {this._body()}
+                    </tbody>
+                </table >
+            </div>
         )
     }
 };

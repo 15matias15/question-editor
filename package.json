@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "install-dep": "concurrently \"cd backend && npm install\" \"cd client && npm install\"",
-    "start": "concurrently \"cd backend && node server.js\" \"cd client && npm start\" \"cd .. && mkdir data && mongod --dbpath=data\""
+    "start": "concurrently \"cd .. && mkdir data \" \"cd backend && node server.js\" \"cd client && npm start\" \"cd .. && mongod --dbpath=data\" "
   },
   "keywords": [],
   "author": "",

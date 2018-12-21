@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function Notes() {
+const notes = () => {
     return (
         <div className="col-sm-6">
             <h5><strong>Notes</strong></h5>
@@ -9,3 +9,5 @@ export function Notes() {
         </div>
     )
 }
+
+export default notes;

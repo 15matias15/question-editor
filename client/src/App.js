@@ -3,9 +3,11 @@ import './App.css';
 import { Form, FormGroup, Label, Input, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import TableEdition from './sections/TableEdition';
 import TableSummary from './sections/TableSummary';
+import Legend from './sections/Legend';
+import Notes from './sections/Notes';
+import Title from './sections/Title';
 import NotificationSystem from 'react-notification-system';
-import { Legend } from './sections/Legend';
-import { Notes } from './sections/Notes';
+
 
 const BASE_URL = 'http://localhost:3001';
 const FILES_FORMAT = /(\.jpg|\.jpeg|\.png|\.pdf|\.doc|\.docx)$/i;
@@ -34,6 +36,12 @@ class App extends Component {
       autoDismiss: 3,
       position: 'tr'
     });
+  };
+
+  changeTitle = (e) => {
+    this.setState({
+      title: e.target.value.toUpperCase()
+    })
   };
 
   addRow = () => {
@@ -136,31 +144,23 @@ class App extends Component {
     return (
       <div className="container">
         <div className="row">
-          <label id="titleLabel" htmlFor="titleInput">Insert a title : </label>
-          <input type="text" id="titleInput" placeholder="Title..." onChange={(event) => { this.setState({ title: event.target.value.toUpperCase() }) }} />
+          <Title changeTitle={this.changeTitle} />
         </div>
         <br />
         <div className="row">
-          <div className="col-sm-6 table-div" >
-            <h5><strong>{this.state.title} EDITION VIEW</strong></h5>
-            {this.state.title || <p style={{ fontStyle: 'italic' }}>Title of the question</p>}
-            <TableEdition
-              addRow={this.addRow}
-              addCol={this.addCol}
-              uploadFile={this.uploadFile}
-              Rows={this.state.rows}
-              Cols={this.state.cols} />
-          </div>
-          <div className="col-sm-6">
-            <h5><strong>{this.state.title} EDITION SUMMARY</strong></h5>
-            <br />
-            <h6>Summary</h6>
-            <TableSummary
-              Rows={this.state.rows}
-              Cols={this.state.cols}
-              numberFiles={this.state.files}
-              Labels={this.state.labels} />
-          </div>
+          <TableEdition
+            addRow={this.addRow}
+            addCol={this.addCol}
+            uploadFile={this.uploadFile}
+            rows={this.state.rows}
+            cols={this.state.cols}
+            title={this.state.title} />
+          <TableSummary
+            rows={this.state.rows}
+            cols={this.state.cols}
+            numberFiles={this.state.files}
+            labels={this.state.labels}
+            title={this.state.title} />
         </div>
         <br />
         <div className="row">
@@ -183,7 +183,7 @@ class App extends Component {
             <Button color="danger" onClick={() => this.setState({ modal: !this.state.modal })}>Cancel</Button>
           </ModalFooter>
         </Modal>
-      </div>
+      </div >
     );
   }
 }
