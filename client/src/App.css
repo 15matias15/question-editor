@@ -10,6 +10,10 @@ table {
   table-layout: fixed;
 }
 
+.col-header {
+  text-align: center;
+}
+
 .button-header {
   background-color: lightgray;
   justify-content: center;

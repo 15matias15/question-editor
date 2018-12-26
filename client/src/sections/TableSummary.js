@@ -1,26 +1,19 @@
-import React, { Component } from 'react'
+import React from 'react'
 
-export default class TableSummary extends Component {
-    handleLabels = () => {
-        this.props.labels.sort((a, b) => a - b);
-        const index = this.props.labels.length;
-        const longest = this.props.labels[index - 1];
-        return (
-            <>
-                <p>Longest label: {longest | 0}</p>
-                <p>Shortest label: {this.props.labels[0] | 0}</p>
-            </>
-        )
-    };
+const tableSummary = (props) => {
+    props.labels.sort((a, b) => a - b);
+    const index = props.labels.length;
+    const longest = props.labels[index - 1];
 
-    render() {
-        return (
-            <div>
-                <p>Number of rows: {this.props.rows.length}</p>
-                <p>Number of columns: {this.props.cols.length}</p>
-                <p>Number of images uploades: {this.props.numberFiles}</p>
-                {this.handleLabels()}
-            </div>
-        )
-    };
+    return (
+        <div>
+            <p>Number of rows: {props.rows.length}</p>
+            <p>Number of columns: {props.cols.length}</p>
+            <p>Number of images uploades: {props.numberFiles}</p>
+            <p>Longest label: {longest | 0}</p>
+            <p>Shortest label: {props.labels[0] | 0}</p>
+        </div>
+    )
 };
+
+export default tableSummary;

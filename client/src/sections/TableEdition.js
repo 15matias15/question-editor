@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,9 +7,9 @@ import { faPlus, faSquare, faMinusCircle } from '@fortawesome/free-solid-svg-ico
 
 library.add(faPlus, faCircle, faSquare, faMinusCircle);
 
-export default class TableEdition extends Component {
-    drawCols = () => {
-        let data = this.props.cols;
+const tableEdition = (props) => {
+    const drawCols = () => {
+        let data = props.cols;
         return (
             data.map((col) => (
                 <th key={col.id} className="button-header">
@@ -17,7 +17,7 @@ export default class TableEdition extends Component {
                         type={col.icon ? "file" : ""}
                         id={"col " + String(col.id)}
                         name="col"
-                        onChange={(e) => col.icon ? this.handleUploadFile(e) : null}
+                        onChange={(e) => col.icon ? handleUploadFile(e) : null}
                         style={{ display: 'none' }} />
                     <label htmlFor={"col " + String(col.id)} className="btn-upload">
                         <FontAwesomeIcon
@@ -30,19 +30,21 @@ export default class TableEdition extends Component {
         )
     };
 
-    drawColNumber = () => {
-        let data = this.props.cols;
+    const drawColNumber = () => {
+        let data = props.cols;
         return (
             data.map((col) => (
-                <th key={col.id}>
+                <th
+                    key={col.id}
+                    className="col-header">
                     {col.name}
                 </th>
             ))
         )
     };
 
-    drawRows = () => {
-        let data = this.props.rows;
+    const drawRows = () => {
+        let data = props.rows;
         return (
             data.map((row) => (
                 <tr key={row.id}>
@@ -51,7 +53,7 @@ export default class TableEdition extends Component {
                             type={row.icon ? "file" : ""}
                             id={"row " + String(row.id)}
                             name="row"
-                            onChange={(e) => row.icon ? this.handleUploadFile(e) : null}
+                            onChange={(e) => row.icon ? handleUploadFile(e) : null}
                             style={{ display: 'none' }} />
                         <label htmlFor={"row " + String(row.id)} className="btn-upload" >
                             <FontAwesomeIcon
@@ -63,7 +65,7 @@ export default class TableEdition extends Component {
                     <td>
                         {row.name}
                     </td>
-                    {this.props.cols.map((col) => {
+                    {props.cols.map((col) => {
                         return (
                             <td key={col.id} className="circle">
                                 <FontAwesomeIcon icon={faCircle} className="fa-sm" />
@@ -75,15 +77,15 @@ export default class TableEdition extends Component {
         )
     };
 
-    handleUploadFile = (event) => {
+    const handleUploadFile = (event) => {
         const id = parseInt(event.target.id.split(" ")[1]);
         const type = event.target.name;
         const file = event.target.files[0];
 
-        this.props.uploadFile(type, id, file);
+        props.uploadFile(type, id, file);
     };
 
-    _header() {
+    const _header = () => {
         return (
             <>
                 <ReactCSSTransitionGroup
@@ -92,8 +94,8 @@ export default class TableEdition extends Component {
                     transitionLeaveTimeout={300}
                     component="tr">
                     <td rowSpan={2} colSpan={2}></td>
-                    {this.drawCols()}
-                    <th className="add" onClick={this.props.addCol}>
+                    {drawCols()}
+                    <th className="add" onClick={props.addCol}>
                         <label>
                             <FontAwesomeIcon icon={faPlus} className="fa-sm add-btn" />
                         </label>
@@ -104,18 +106,18 @@ export default class TableEdition extends Component {
                     transitionEnterTimeout={500}
                     transitionLeaveTimeout={300}
                     component="tr">
-                    {this.drawColNumber()}
+                    {drawColNumber()}
                 </ReactCSSTransitionGroup>
             </>
         )
     };
 
-    _body() {
+    const _body = () => {
         return (
             <>
-                {this.drawRows()}
+                {drawRows()}
                 <tr>
-                    <td className="add" onClick={this.props.addRow}>
+                    <td className="add" onClick={props.addRow}>
                         <label>
                             <FontAwesomeIcon icon={faPlus} className="fa-sm add-btn" />
                         </label>
@@ -125,20 +127,20 @@ export default class TableEdition extends Component {
         )
     };
 
-    render() {
-        return (
-            <div className="col-sm-6" >
-                <h5><strong>{this.props.title} EDITION VIEW</strong></h5>
-                {this.props.title || <p style={{ fontStyle: 'italic' }}>Title of the question</p>}
-                <table>
-                    <thead>
-                        {this._header()}
-                    </thead>
-                    <tbody>
-                        {this._body()}
-                    </tbody>
-                </table >
-            </div>
-        )
-    }
+    return (
+        <div className="col-sm-6" >
+            <h5><strong>{props.title} EDITION VIEW</strong></h5>
+            {props.title || <p style={{ fontStyle: 'italic' }}>Title of the question</p>}
+            <table>
+                <thead>
+                    {_header()}
+                </thead>
+                <tbody>
+                    {_body()}
+                </tbody>
+            </table >
+        </div>
+    )
 };
+
+export default tableEdition;
