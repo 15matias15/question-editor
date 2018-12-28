@@ -28,6 +28,21 @@ const upload = multer({
     fileFilter: imageFileFilter
 });
 
+router.get('/upload', (req, res) => {
+    MongoClient.connect(url, (err, db) => {
+        assert.strictEqual(null, err);
+        console.log("Connected successfully to MongoDB server // GET");
+        const myDb = db.db('questionEditor');
+
+        myDb.collection('questionEditor')
+            .find({}).toArray((err, result) => {
+                assert.equal(null, err);
+                db.close();
+                res.status("200").json(result);
+            })
+    });
+});
+
 router.post('/upload', upload.single('file'), (req, res) => {
     var filename = req.file.filename;
     req.body.filename = filename;
@@ -38,7 +53,7 @@ router.post('/upload', upload.single('file'), (req, res) => {
         req.checkBody('type', 'type  is required').notEmpty();
         MongoClient.connect(url, (err, db) => {
             assert.strictEqual(null, err);
-            console.log("Connected successfully to MongoDB server");
+            console.log("Connected successfully to MongoDB server // POST");
             const myDb = db.db('questionEditor');
 
             myDb.collection('questionEditor')
@@ -59,6 +74,33 @@ router.post('/upload', upload.single('file'), (req, res) => {
     } else {
         res.status("409").json("No Files to Upload.");
     }
+});
+
+router.delete('/upload/:id/:type', (req, res) => {
+    MongoClient.connect(url, (err, db) => {
+        assert.strictEqual(null, err);
+        console.log("Connected successfully to MongoDB server // DELETE");
+        const id = req.params.id
+        const type = req.params.type;
+        const myDb = db.db('questionEditor');
+
+        myDb.collection('questionEditor')
+            .deleteOne({ type: type, id: id }, (err, r) => {
+                assert.equal(null, err);
+                assert.equal(1, r.result.ok);
+                if (r.result.ok === 1) {
+                    myDb.collection('questionEditor')
+                        .find({}).toArray((err, result) => {
+                            assert.equal(null, err);
+                            db.close();
+                            res.status("200").json(result);
+                        })
+                } else {
+                    db.close();
+                    res.status("500").json({ status: "error" });
+                }
+            })
+    });
 });
 
 module.exports = router;

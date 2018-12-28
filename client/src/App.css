@@ -22,6 +22,13 @@ table {
   height: 30px;
 }
 
+.delete-header {
+  justify-content: center;
+  text-align: center;
+  width: 30px;
+  height: 30px;
+}
+
 th {
   font-weight: normal;
 }
@@ -44,6 +51,16 @@ th {
 }
 
 .btn-upload {
+  background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+}
+
+.btn-delete{
   background: none;
 	color: inherit;
 	border: none;
