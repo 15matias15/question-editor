@@ -214,14 +214,16 @@ class App extends Component {
         </div>
         <br />
         <div className="row">
-          <TableEdition
-            addRow={this.addRow}
-            addCol={this.addCol}
-            uploadFile={this.uploadFile}
-            delete={this.delete}
-            rows={this.state.rows}
-            cols={this.state.cols}
-            title={this.state.title} />
+          <div className="table-div">
+            <TableEdition
+              addRow={this.addRow}
+              addCol={this.addCol}
+              uploadFile={this.uploadFile}
+              delete={this.delete}
+              rows={this.state.rows}
+              cols={this.state.cols}
+              title={this.state.title} />
+          </div>
           <TableSummary
             rows={this.state.rows}
             cols={this.state.cols}
