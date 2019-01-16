@@ -18,7 +18,7 @@ const tableEdition = (props) => {
                             icon={faMinusCircle}
                             className="fa-sm"
                             style={{ color: "red" }}
-                            onClick={() => props.delete(col.id, "col")} />
+                            onClick={() => props.delete(col._id, "col")} />
                     </label>
                 </th>
             ))
@@ -89,7 +89,7 @@ const tableEdition = (props) => {
                                 icon={faMinusCircle}
                                 className="fa-sm"
                                 style={{ color: "red" }}
-                                onClick={() => props.delete(row.id, "row")} />
+                                onClick={() => props.delete(row._id, "row")} />
                         </label>
                     </td>
                     {row.filename === ""
@@ -119,7 +119,6 @@ const tableEdition = (props) => {
                             </label>
                         </td>
                     }
-
                     <td>
                         <input
                             type="input"

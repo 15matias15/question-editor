@@ -28,7 +28,7 @@ class App extends Component {
   notificationSystem = React.createRef()
 
   componentWillMount() {
-    fetch(`${BASE_URL}/upload`, {
+    fetch(`${BASE_URL}/getUpload`, {
       method: 'GET'
     })
       .then(res => res.json())
@@ -79,7 +79,7 @@ class App extends Component {
 
   delete = (id, type) => {
     if (window.confirm(`Are you sure you wish to delete this ${type}?`)) {
-      fetch(`${BASE_URL}/upload/${id}/${type}`, {
+      fetch(`${BASE_URL}/deleteLabel/${id}`, {
         method: 'DELETE'
       })
         .then(res => res.json())
@@ -124,35 +124,17 @@ class App extends Component {
     let data;
 
     if (this.state.toAdd === 'col') {
-      const newCol = {
+      data = {
         id: this.state.cols.length + 1,
         name: this.state.nametoAdd,
-        filename: ''
-      }
-      this.setState({
-        cols: [...this.state.cols, newCol],
-        labels: [...this.state.labels, +newCol.name.length]
-      })
-      data = {
-        id: newCol.id,
-        name: newCol.name,
         type: this.state.toAdd,
         filename: ''
       };
     }
     if (this.state.toAdd === 'row') {
-      const newRow = {
+      data = {
         id: this.state.rows.length + 1,
         name: this.state.nametoAdd,
-        filename: ''
-      }
-      this.setState({
-        rows: [...this.state.rows, newRow],
-        labels: [...this.state.labels, +newRow.name.length]
-      })
-      data = {
-        id: newRow.id,
-        name: newRow.name,
         type: this.state.toAdd,
         filename: ''
       };
@@ -168,6 +150,30 @@ class App extends Component {
       .then(res => res.json())
       .then((resp) => {
         if (resp.status === 'done') {
+          if (this.state.toAdd === 'col') {
+            const newCol = {
+              id: this.state.cols.length + 1,
+              name: this.state.nametoAdd,
+              filename: '',
+              _id: resp.idMongo
+            }
+            this.setState({
+              cols: [...this.state.cols, newCol],
+              labels: [...this.state.labels, +newCol.name.length]
+            })
+          }
+          if (this.state.toAdd === 'row') {
+            const newRow = {
+              id: this.state.rows.length + 1,
+              name: this.state.nametoAdd,
+              filename: '',
+              _id: resp.idMongo
+            }
+            this.setState({
+              rows: [...this.state.rows, newRow],
+              labels: [...this.state.labels, +newRow.name.length]
+            })
+          }
           this.handleNotification(`${this.state.toAdd} created successfully`, 'success');
         } else {
           this.handleNotification(`We have problems creating the ${this.state.toAdd}`, 'error');

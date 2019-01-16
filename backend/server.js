@@ -4,7 +4,11 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const config = require('./config');
 const port = config.port;
-const routes = require('./routes/upload');
+const getUpload = require('./routes/getUpload');
+const deleteLabel = require('./routes/deleteLabel');
+const uploadLabel = require('./routes/uploadLabel');
+const updateLabel = require('./routes/updateLabel');
+const uploadFile = require('./routes/uploadFile');
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
 const url = config.mongoUrl;
@@ -24,12 +28,15 @@ MongoClient.connect(url, (err, db) => {
     app.listen(port, () => console.log(`Listening on port ${port}`))
 })
 
-
-app.use('/', routes);
+app.use('/getUpload', getUpload);
+app.use('/deleteLabel', deleteLabel);
+app.use('/uploadLabel', uploadLabel);
+app.use('/updateLabel', updateLabel);
+app.use('/uploadFile', uploadFile);
 app.use(function (req, res, next) {
     const err = new Error('Not Found');
     err.status = 404;
-    res.render('error', {
+    res.json({
         message: err.message,
         error: err
     });
