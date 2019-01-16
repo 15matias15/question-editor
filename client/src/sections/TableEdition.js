@@ -30,16 +30,16 @@ const tableEdition = (props) => {
         return (
             data.map((col) => (
                 <th key={col.id} className="button-header">
-                    {col.icon
+                    {col.filename === ""
                         ?
                         <>
                             <input
                                 type="file"
-                                id={"col " + String(col.id)}
+                                id={"col " + col._id + " " + col.id}
                                 name="col"
-                                onChange={(e) => col.icon ? handleUploadFile(e) : null}
+                                onChange={(e) => handleUploadFile(e)}
                                 style={{ display: 'none' }} />
-                            <label htmlFor={"col " + String(col.id)} className="btn-upload">
+                            <label htmlFor={"col " + col._id + " " + col.id} className="btn-upload">
                                 <FontAwesomeIcon
                                     icon={faPlus}
                                     className="fa-sm"
@@ -68,7 +68,11 @@ const tableEdition = (props) => {
                 <th
                     key={col.id}
                     className="col-header">
-                    {col.name}
+                    <input
+                        type="input"
+                        className="table-label"
+                        defaultValue={col.name}
+                        onBlur={(e) => handleUpdateLabel("col", col.id, e, col._id)} />
                 </th>
             ))
         )
@@ -88,19 +92,20 @@ const tableEdition = (props) => {
                                 onClick={() => props.delete(row.id, "row")} />
                         </label>
                     </td>
-                    {row.icon
+                    {row.filename === ""
                         ?
                         <td className="button-header">
                             <input
                                 type="file"
-                                id={"row " + String(row.id)}
+                                id={"row " + row._id + " " + row.id}
                                 name="row"
-                                onChange={(e) => row.icon ? handleUploadFile(e) : null}
+                                onChange={(e) => handleUploadFile(e)}
                                 style={{ display: 'none' }} />
-                            <label htmlFor={"row " + String(row.id)} className="btn-upload" >
+                            <label htmlFor={"row " + row._id + " " + row.id} className="btn-upload" >
                                 <FontAwesomeIcon
                                     icon={faPlus}
-                                    className="fa-sm" />
+                                    className="fa-sm"
+                                    style={{ color: "grey" }} />
                             </label>
                         </td>
                         :
@@ -116,7 +121,11 @@ const tableEdition = (props) => {
                     }
 
                     <td>
-                        {row.name}
+                        <input
+                            type="input"
+                            className="table-label"
+                            defaultValue={row.name}
+                            onBlur={(e) => handleUpdateLabel("row", row.id, e, row._id)} />
                     </td>
                     {props.cols.map((col) => {
                         return (
@@ -131,10 +140,16 @@ const tableEdition = (props) => {
     };
 
     const handleUploadFile = (event) => {
-        const id = parseInt(event.target.id.split(" ")[1]);
+        const id = event.target.id.split(" ")[1];
+        const idArray = event.target.id.split(" ")[2];
         const type = event.target.name;
         const file = event.target.files[0];
-        props.uploadFile(type, id, file);
+        props.uploadFile(type, id, file, idArray);
+    };
+
+    const handleUpdateLabel = (type, idArray, event, id) => {
+        const labelName = event.target.value;
+        props.updateLabel(type, id, labelName, idArray, event);
     };
 
     const handleShowFile = (id, type) => {

@@ -114,3 +114,8 @@ th {
   display: flex;
   font-size: 15px;
 }
+
+.table-label {
+  width: 50px;
+  font-style: italic;
+}

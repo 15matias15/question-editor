@@ -110,7 +110,6 @@ class App extends Component {
           }
         })
         .catch(err => {
-          console.error("Error:", err);
           this.handleNotification('We can\'t delete the ' + type + '. Try again', 'error');
         })
     }
@@ -121,58 +120,156 @@ class App extends Component {
       this.handleNotification(`Insert a valid name for ${this.state.toAdd}`, 'error');
       return;
     };
-    if (this.state.toAdd === "col") {
+
+    let data;
+
+    if (this.state.toAdd === 'col') {
       const newCol = {
         id: this.state.cols.length + 1,
         name: this.state.nametoAdd,
-        icon: true,
         filename: ''
       }
       this.setState({
         cols: [...this.state.cols, newCol],
         labels: [...this.state.labels, +newCol.name.length]
       })
+      data = {
+        id: newCol.id,
+        name: newCol.name,
+        type: this.state.toAdd,
+        filename: ''
+      };
     }
-    if (this.state.toAdd === "row") {
+    if (this.state.toAdd === 'row') {
       const newRow = {
         id: this.state.rows.length + 1,
         name: this.state.nametoAdd,
-        icon: true,
         filename: ''
       }
       this.setState({
         rows: [...this.state.rows, newRow],
         labels: [...this.state.labels, +newRow.name.length]
       })
+      data = {
+        id: newRow.id,
+        name: newRow.name,
+        type: this.state.toAdd,
+        filename: ''
+      };
     }
-    this.setState({
-      toAdd: '',
-      nametoAdd: '',
-      modal: !this.state.modal
-    });
+
+    fetch(`${BASE_URL}/uploadLabel`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data),
+    })
+      .then(res => res.json())
+      .then((resp) => {
+        if (resp.status === 'done') {
+          this.handleNotification(`${this.state.toAdd} created successfully`, 'success');
+        } else {
+          this.handleNotification(`We have problems creating the ${this.state.toAdd}`, 'error');
+        }
+        this.setState({
+          toAdd: '',
+          nametoAdd: '',
+          modal: !this.state.modal
+        });
+      })
+      .catch(err => {
+        this.handleNotification(`We have problems creating the ${this.state.toAdd}`, 'error');
+        this.setState({
+          toAdd: '',
+          nametoAdd: '',
+          modal: !this.state.modal
+        });
+      })
   };
 
-  uploadFile = (type, id, file) => {
+  handleUpdateLabel = (type, id, name, idArray, event) => {
+    if (name.length === 0 || name === "") {
+      this.handleNotification(`Insert a valid name for ${this.state.toAdd}`, 'error');
+      return;
+    };
+
+    let stateCopyRow;
+    let stateCopyCol;
+    if (type === 'row') {
+      stateCopyRow = [...this.state.rows];
+      const copyRowUpdate = stateCopyRow.filter(row => row._id === id);
+      if (copyRowUpdate[0].name === name) {
+        return;
+      }
+    }
+
+    if (type === 'col') {
+      stateCopyCol = [...this.state.cols];
+      const copyColUpdate = stateCopyCol.filter(col => col._id === id);
+      if (copyColUpdate[0].name === name) {
+        return;
+      }
+    }
+
+    const data = {
+      id: id,
+      name: name
+    };
+
+    fetch(`${BASE_URL}/updateLabel`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data),
+    })
+      .then(res => res.json())
+      .then((resp) => {
+        if (resp.status === 'done') {
+          if (type === 'row') {
+            stateCopyRow[idArray - 1].name = name;
+            this.setState({
+              rows: stateCopyRow
+            });
+          }
+          if (type === 'col') {
+            stateCopyCol[idArray - 1].name = name;
+            this.setState({
+              cols: stateCopyCol
+            });
+          }
+          this.updateLabelsLength();
+          this.handleNotification(`${type} updated successfully`, 'success');
+        } else {
+          this.handleNotification(`We can't update your ${type}. Try again`, 'error');
+        }
+      })
+      .catch(err => {
+        this.handleNotification(`We can't update your ${type}. Try again`, 'error');
+      })
+  }
+
+  updateLabelsLength = () => {
+    let newLabels = this.state.cols.map(col => col.name.length);
+    newLabels = [...newLabels, this.state.rows.map(row => row.name.length)]
+    this.setState({
+      labels: newLabels
+    })
+  };
+
+  uploadFile = (type, id, file, idArray) => {
     if (!FILES_FORMAT.exec(file.name)) {
       this.handleNotification('Upload only files in format JPG, JPEG, PNG, DOC, DOCX & PDF', 'error');
       return;
     };
-    let name;
-
-    if (type === 'row') {
-      name = this.state.rows.find(row => row.id === id).name
-    } else {
-      name = this.state.cols.find(col => col.id === id).name
-    }
 
     const data = new FormData();
     data.append('file', file);
     data.append('filename', file.name);
     data.append('id', id);
-    data.append('type', type);
-    data.append('name', name);
 
-    fetch(`${BASE_URL}/upload`, {
+    fetch(`${BASE_URL}/uploadFile`, {
       method: 'POST',
       body: data,
     })
@@ -181,8 +278,7 @@ class App extends Component {
         if (resp.status === 'done') {
           if (type === 'row') {
             let stateCopyRow = [...this.state.rows];
-            stateCopyRow[id - 1].icon = !stateCopyRow[id - 1].icon;
-            stateCopyRow[id - 1].filename = resp.fileNewName;
+            stateCopyRow[idArray - 1].filename = resp.fileNewName;
             this.setState({
               rows: stateCopyRow,
               files: this.state.files + 1
@@ -190,8 +286,7 @@ class App extends Component {
           }
           if (type === 'col') {
             let stateCopyCol = [...this.state.cols];
-            stateCopyCol[id - 1].icon = !stateCopyCol[id - 1].icon;
-            stateCopyCol[id - 1].filename = resp.fileNewName;
+            stateCopyCol[idArray - 1].filename = resp.fileNewName;
             this.setState({
               cols: stateCopyCol,
               files: this.state.files + 1
@@ -201,7 +296,6 @@ class App extends Component {
         }
       })
       .catch(err => {
-        console.error("Error:", err);
         this.handleNotification('We can\'t upload your file. Try again', 'error');
       })
   };
@@ -222,7 +316,8 @@ class App extends Component {
               delete={this.delete}
               rows={this.state.rows}
               cols={this.state.cols}
-              title={this.state.title} />
+              title={this.state.title}
+              updateLabel={this.handleUpdateLabel} />
           </div>
           <TableSummary
             rows={this.state.rows}
