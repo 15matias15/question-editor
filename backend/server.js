@@ -5,6 +5,9 @@ const cors = require('cors');
 const config = require('./config');
 const port = config.port;
 const routes = require('./routes/upload');
+const MongoClient = require('mongodb').MongoClient;
+const assert = require('assert');
+const url = config.mongoUrl;
 
 const app = express();
 
@@ -12,6 +15,15 @@ app.use(cors());
 app.use(expressValidator());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+MongoClient.connect(url, (err, db) => {
+    assert.strictEqual(null, err);
+    console.log("Connected successfully to MongoDB server");
+    app.locals.db = db.db('questionEditor');;
+
+    app.listen(port, () => console.log(`Listening on port ${port}`))
+})
+
 
 app.use('/', routes);
 app.use(function (req, res, next) {
@@ -22,6 +34,3 @@ app.use(function (req, res, next) {
         error: err
     });
 });
-
-
-app.listen(port, () => console.log(`Listening on port ${port}`));
